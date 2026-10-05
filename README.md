@@ -32,12 +32,13 @@ Maximum server age: 14 hours
 
 
 
+# CONTACT ME
+thknk on discord
 
 
 
 
-
-im just gonna copy and paste some info on how spook trees work
+# im just gonna copy and paste some info on how spook trees work
 
 ## 🌲 How Spook Trees Work
 
