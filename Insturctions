@@ -1,0 +1,118 @@
+advanced options
+
+same thing as the simple mode
+
+server filtering
+
+same thing as the simple mode
+
+remove servers evere # seconds you cannot go below 0.25 by using the drop arrows but you can type lower than it but roblox may bug because the server list is ass
+
+advanced time checking
+
+☀ - has high confidence its day time
+ ☀ ~  low or unkown confidence its day time
+ ☾ - has high confidence its night time
+ ☾ ~ low or unkown confidence its night time
+
+how the day calcuation works
+lets say the server is a age of 12h 10m 2s it reduces the age of the server to the closet hour 
+12hrs convert that into minutes which is 720m
+add eight to account for any server day shifts 728
+divide this number by 24 which is eight so we get a frac
+8/24
+i created two tables to assign the values
+Day 0-16m
+night 16-24m
+
+since of course eight is inside the day it is probably day time in that server 
+
+for a likely hood presentage i do this 
+
+10 minutes away from 12h
+
+100 × (1 - 10/60)
+= 83.3%
+
+so the plugin would predict
+
+☀ ~
+83% likely by hour model
+
+at 12hrs the plugin auto predicts 100% because every new hour is most day
+
+now this is heuristic not the actual server lighting.clocktime, im using the servers uptime + 24m cycle and the day and night minutes + an 8minute calibartion to shift to make a cleaner prediction
+
+
+cycle length (each lumbe tycoon day is 24 irl minutes)
+day length (lumber tycoon day time is 16 irl minutes)
+night length (lumber tycoon night time is 8 irl minutes)
+
+cycle shift (a eight minute calibartion that can be changed)
+
+transition buffer
+
+a 2 minute transiton buffer makes the plugin more cautious neaer the boundaries
+
+instead of roughly treating the ranges it does this
+
+0–2 min     = uncertain near cycle start
+2–14 min    = confident DAY
+14–18 min   = uncertain around day → night transition
+18–22 min   = confident NIGHT
+22–24 min   = uncertain near night → next cycle
+
+back to the uncertian hours it uses the squiggle
+☀ ~
+☾ ~
+
+outside this it assumes the cofidence good and lets it pass
+☀
+☾
+
+higher transition buffer = fewer confident icons, but safer predictions
+lower transition buffer = more ☀/☾ icons but a higher chance it calls something definite when the server is actually near a transition
+
+each server gets scanned multiple times to check calcuations of a probability to make chances higher 
+
+i set it to two as its shown good results but if you want 100% good server predcition you CAN set it higher but it takes longer for the plugin to give you a cofidence scale
+now this doesnt automatically mean you will get better servers that are day time 100% but it being two makes it a higher probabilty
+
+1 scan = fastest least reliable
+2 scans = pretty quick and decent
+3 scans = safer but slower
+4–5 scans = very cautious but slower before a confident icon appears
+
+and you cant set these to 1.5 because how the hell can you check .5 of a scan
+
+dual source agreement means the extension tries to get the server uptime from two different places and checks wether they match closely enough before testing any results
+Source 1: 12h 10m 02s
+Source 2: 12h 10m 05s
+
+those agree so its treated as reliable
+but if the feed is like
+
+Source 1: 12h 10m
+Source 2: 8h 47m
+
+then something is clearly wrong so it should avoid showing a confident ☀ or ☾
+
+
+the agreement value is basically the maximum difference allowed between those two readings
+
+12h 10m 02s
+12h 10m 25s
+this is also not accepted
+
+the agreeance gap that i put is 2.5 which is good but you can choose if you want it exact now they wontalways be exact so dont take this and say well i want 0 secound off difference servers Rolvera API doesnt pull it the greatest because some reason roblox doesnt have an api for server age for some dumbass reason
+
+source conflict goes back to line 103 and 104 but it takes the two disagreeing times and does this
+
+8 sec apart  →  agreement
+30 sec apart →  not ideal but not a hard conflict
+90 sec apart →  source conflict
+
+default value is 10 so it checks if the distance is 10 then sends it to the dual source agreement
+
+that gives RoValra a little breathing room without trusting readings that are obviously way off
+
